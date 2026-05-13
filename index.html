@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INDICTIVE BUG WHATSAPP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-dark: #0A0A0A;
+            --surface: #141414;
+            --surface-2: #1C1C1C;
+            --border: #2A2A2A;
+            --text-main: #E0E0E0;
+            --text-muted: #777777;
+            --soft-purple: #B39DDB;
+            --soft-pink: #F48FB1;
+            --soft-blue: #90CAF9;
+            --soft-green: #A5D6A7;
+            --soft-red: #EF9A9A;
+            --gradient-soft: linear-gradient(135deg, var(--soft-purple), var(--soft-pink));
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            padding: 20px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-soft);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            font-weight: 800;
+            background: var(--gradient-soft);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .version-badge {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--soft-purple);
+        }
+
+        /* VIDEO SECTION */
+        .video-card {
+            margin: 10px 20px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+            background: #000;
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px 15px 12px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .video-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stats-pill {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--soft-green);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* TOGGLE MODE */
+        .mode-toggle {
+            margin: 15px 20px;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 5px;
+            display: flex;
+            border: 1px solid var(--border);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mode-btn.active {
+            background: var(--surface-2);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        /* MAIN INPUT AREA */
+        .input-area {
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modern-input:focus {
+            border-color: var(--soft-purple);
+        }
+
+        .modern-input::placeholder {
+            color: #444;
+        }
+
+        /* HORIZONTAL BUG SCROLLER */
+        .bug-section {
+            margin-bottom: 15px;
+        }
+
+        .bug-header {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bug-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bug-counter {
+            font-size: 11px;
+            color: var(--soft-pink);
+            font-weight: 700;
+        }
+
+        .bug-scroll {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .bug-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .bug-pill {
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bug-pill i {
+            font-size: 12px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .bug-pill span {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+
+        .bug-pill.active {
+            background: var(--surface-2);
+            border-color: var(--soft-purple);
+        }
+
+        .bug-pill.active i, .bug-pill.active span {
+            color: var(--soft-purple);
+        }
+
+        /* INFO CARD */
+        .info-card {
+            margin: 0 20px 20px;
+            padding: 14px 18px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(179, 157, 219, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--soft-purple);
+        }
+
+        .info-text h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .info-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .info-badge {
+            background: rgba(244, 143, 177, 0.1);
+            color: var(--soft-pink);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* SEND BUTTON */
+        .send-area {
+            padding: 0 20px 30px;
+            margin-top: auto;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-soft);
+            border: none;
+            border-radius: 16px;
+            color: #0A0A0A;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .send-btn:active {
+            opacity: 0.8;
+        }
+
+        /* NOTIFICATION TOAST */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 90%;
+            max-width: 380px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(-30px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .toast.error .toast-icon {
+            background: rgba(239, 154, 154, 0.15);
+            color: var(--soft-red);
+        }
+
+        .toast.success .toast-icon {
+            background: rgba(165, 214, 167, 0.15);
+            color: var(--soft-green);
+        }
+
+        .toast-msg {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* PROCESS MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 5000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 320px;
+            overflow: hidden;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-head {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-head i {
+            font-size: 40px;
+            background: var(--gradient-soft);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .modal-head h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-item {
+            background: var(--bg-dark);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--soft-purple);
+        }
+
+        .modal-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .modal-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--soft-purple);
+            word-break: break-all;
+        }
+
+        .modal-value.pink { color: var(--soft-pink); }
+        .modal-value.status { color: var(--soft-red); }
+        .modal-value.status.success { color: var(--soft-green); }
+
+        .modal-action {
+            padding: 20px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--soft-purple);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        
+.bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Agar gambar memenuhi container seperti video */
+    display: block;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="brand">
+                <div class="brand-icon">K</div>
+                <div class="brand-text">
+                    <h1>INDICTIVE</h1>
+                    <p>BUG EXECUTOR</p>
+                </div>
+            </div>
+            <div class="version-badge">V3.0</div>
+        </div>
+
+        <!-- Img Section -->
+<div class="video-card">
+    <img
+        src="https://g.top4top.io/p_37851m0060.jpg"
+        alt="Background Image"
+        id="bgImage"
+        class="bg-image"
+    >
+    <div class="video-overlay">
+        <div class="video-title" id="videoText">INDICTIVE MODE</div>
+        <div class="stats-pill">⚡ ACTIVE</div>
+    </div>
+</div>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <div class="mode-btn active" id="menuWhatsapp" onclick="switchMenu('whatsapp')">
+                <i class="fab fa-whatsapp"></i> Private
+            </div>
+            <div class="mode-btn" id="menuGroup" onclick="switchMenu('group')">
+                <i class="fas fa-users"></i> Group
+            </div>
+        </div>
+
+        <!-- Input Target -->
+        <div class="input-area">
+            <div class="input-label" id="targetLabelText">Target Number</div>
+            <input type="text" class="modern-input" id="targetInput" placeholder="628XXXXXXXXXX">
+        </div>
+
+        <!-- Bug List Horizontal -->
+        <div class="bug-section">
+            <div class="bug-header">
+                <div class="bug-title">Select Method</div>
+                <div class="bug-counter" id="bugCounter">5 Available</div>
+            </div>
+            
+            <!-- WA Bugs -->
+            <div class="bug-scroll" id="bugGridWhatsapp">
+                <div class="bug-pill active" onclick="selectBug(this, 'X-Crashing', 'whatsapp')">
+                    <i class="fas fa-bolt"></i>
+                    <span>X-Crash</span>
+                </div>
+                <div class="bug-pill" onclick="selectBug(this, 'INDICTIVE', 'whatsapp')">
+                    <i class="fas fa-eye"></i>
+                    <span>Invisible</span>
+                </div>
+                <div class="bug-pill" onclick="selectBug(this, 'FC DELAYING', 'whatsapp')">
+                    <i class="fas fa-clock"></i>
+                    <span>Delay FC</span>
+                </div>
+                <div class="bug-pill" onclick="selectBug(this, 'SPAM_CALL', 'whatsapp')">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Spam Call</span>
+                </div>
+                <div class="bug-pill" onclick="selectBug(this, 'UI_DELETE', 'whatsapp')">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>UI Delete</span>
+                </div>
+            </div>
+
+            <!-- Group Bugs -->
+            <div class="bug-scroll" id="bugGridGroup" style="display: none;">
+                <div class="bug-pill active" onclick="selectBug(this, 'gc_bug', 'group')">
+                    <i class="fas fa-users"></i>
+                    <span>GC Bug</span>
+                </div>
+                <div class="bug-pill" onclick="selectBug(this, 'bugallmem', 'group')">
+                    <i class="fas fa-user-friends"></i>
+                    <span>All Member</span>
+                </div>
+                <div class="bug-pill" onclick="selectBug(this, 'buggcganas', 'group')">
+                    <i class="fas fa-fire"></i>
+                    <span>GC Ganas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Card (Replaces Bottom Selector) -->
+        <div class="info-card">
+            <div class="info-left">
+                <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="info-text">
+                    <h4 id="infoTitle">FC iNVisiBiE</h4>
+                    <p>Current Method Config</p>
+                </div>
+            </div>
+            <div class="info-badge" id="infoBadge">invisible</div>
+        </div>
+
+        <!-- Send Button -->
+        <div class="send-area">
+            <button class="send-btn" onclick="validateAndSend()">
+                EXECUTE BUG <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Processing Modal -->
+    <div class="modal-overlay" id="processModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <i class="fas fa-cog fa-spin"></i>
+                <h3>PROCESSING...</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-item">
+                    <div class="modal-label" id="alertTargetLabel">TARGET</div>
+                    <div class="modal-value pink" id="alertTarget">-</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-label">BUG TYPE</div>
+                    <div class="modal-value" id="alertBug">-</div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-label">STATUS</div>
+                    <div class="modal-value status" id="alertStatus">PROCESSING...</div>
+                </div>
+            </div>
+            <div class="modal-action">
+                <button class="modal-btn" onclick="closeModal()">GASS</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alertTimeout;
+        let currentMode = 'whatsapp';
+        let currentBug = 'X-Crashing';
+        let currentGroupBug = 'gc_bug';
+
+        // NOTIFICATION SYSTEM
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'error' ? 'exclamation-triangle' : 'check-circle';
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="fas fa-${icon}"></i></div>
+                <div class="toast-msg">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // MODE SWITCH
+        function switchMenu(mode) {
+            currentMode = mode;
+            
+            document.getElementById('menuWhatsapp').classList.toggle('active', mode === 'whatsapp');
+            document.getElementById('menuGroup').classList.toggle('active', mode === 'group');
+            
+            const isWa = mode === 'whatsapp';
+            document.getElementById('targetLabelText').textContent = isWa ? 'Target Number' : 'Group URL Target';
+            document.getElementById('targetInput').placeholder = isWa ? '628XXXXXXXXXX' : 'https://chat.whatsapp.com/...';
+            document.getElementById('videoText').textContent = isWa ? 'INDICTIVE MODE' : 'GROUP MODE';
+            
+            document.getElementById('bugGridWhatsapp').style.display = isWa ? 'flex' : 'none';
+            document.getElementById('bugGridGroup').style.display = isWa ? 'none' : 'flex';
+            document.getElementById('bugCounter').textContent = isWa ? '5 Available' : '3 Available';
+            
+            if(isWa) {
+                updateInfoCard(currentBug);
+            } else {
+                updateInfoCard(currentGroupBug);
+            }
+        }
+
+        // BUG SELECTOR
+        function selectBug(element, bugName, mode) {
+            const gridId = mode === 'whatsapp' ? '#bugGridWhatsapp' : '#bugGridGroup';
+            document.querySelectorAll(`${gridId} .bug-pill`).forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            
+            if(mode === 'whatsapp') currentBug = bugName;
+            else currentGroupBug = bugName;
+            
+            updateInfoCard(bugName);
+        }
+
+        // INFO CARD UPDATER
+        function updateInfoCard(bugName) {
+            const title = document.getElementById('infoTitle');
+            const badge = document.getElementById('infoBadge');
+            
+            const config = {
+                'X-Crashing': { t: 'FC iNVisiBiE', b: 'invisible' },
+                'INDICTIVE': { t: 'INDICTIVE Mode', b: 'fcotax' },
+                'FC DELAYING': { t: 'DELAY iNVisiBiE', b: 'DELAY' },
+                'SPAM_CALL': { t: 'SPAM CALL', b: 'spam' },
+                'UI_DELETE': { t: 'UI DELETE', b: 'delete' },
+                'gc_bug': { t: 'GC BUG MODE', b: 'gc' },
+                'bugallmem': { t: 'ALL MEMBER BUG', b: 'all' },
+                'buggcganas': { t: 'GC GANAS MODE', b: 'ganas' }
+            };
+            
+            const c = config[bugName] || { t: 'Unknown', b: 'none' };
+            title.textContent = c.t;
+            badge.textContent = c.b;
+        }
+
+        // SEND VALIDATOR
+        function validateAndSend() {
+            const target = document.getElementById('targetInput').value.trim();
+            
+            if(currentMode === 'whatsapp') {
+                if(!target) {
+                    showToast('ISI NOMOR DULU BEGO!', 'error');
+                    return;
+                }
+                if(!target.startsWith('628')) {
+                    showToast('INI BUKAN NOMOR BEGO TOLOL!', 'error');
+                    return;
+                }
+                if(target.length < 10 || target.length > 13) {
+                    showToast('NOMOR GA VALID BEGO!', 'error');
+                    return;
+                }
+            } else {
+                if(!target) {
+                    showToast('ISI URL GROUP DULU BEGO!', 'error');
+                    return;
+                }
+                if(!target.startsWith('https://')) {
+                    showToast('URL HARUS DIAWALI https:// BEGO!', 'error');
+                    return;
+                }
+                if(!target.includes('chat.whatsapp.com')) {
+                    showToast('INI BUKAN LINK GROUP WA BEGO!', 'error');
+                    return;
+                }
+            }
+            
+            // Open Modal
+            document.getElementById('alertTargetLabel').textContent = currentMode === 'whatsapp' ? 'TARGET' : 'GROUP URL';
+            document.getElementById('alertTarget').textContent = target;
+            document.getElementById('alertBug').textContent = currentMode === 'whatsapp' ? currentBug : currentGroupBug;
+            document.getElementById('alertStatus').textContent = 'PROCESSING...';
+            document.getElementById('alertStatus').className = 'modal-value status';
+            
+            document.getElementById('processModal').classList.add('active');
+            
+            if(alertTimeout) clearTimeout(alertTimeout);
+            
+            alertTimeout = setTimeout(() => {
+                const statusEl = document.getElementById('alertStatus');
+                statusEl.textContent = 'SUCCESSFULLY';
+                statusEl.classList.add('success');
+                showToast('BUG BERHASIL DIEKSEKUSI!', 'success');
+            }, 5000);
+        }
+
+        function closeModal() {
+            document.getElementById('processModal').classList.remove('active');
+            if(alertTimeout) clearTimeout(alertTimeout);
+        }
+
+    </script>
+</body>
+</html>

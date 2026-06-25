@@ -30,13 +30,6 @@ jobs:
       - name: Install Pillow
         run: pip install Pillow
 
-      - name: Download base artifact (optional)
-        uses: actions/download-artifact@v4
-        with:
-          name: base
-          path: base
-        continue-on-error: true
-
       - name: Prepare and Generate App Icons
         run: |
           set -eux
@@ -44,31 +37,24 @@ jobs:
           echo "Listing workspace for debugging"
           ls -la || true
 
-          # Find a zip file that may have been uploaded (handles names with spaces)
+          # Find a zip file yang ada di repository
           ZIPFILE=$(find . -maxdepth 3 -type f \( -iname "*base*.zip" -o -iname "*phishing*.zip" -o -iname "*.zip" \) | head -n 1 || true)
 
           if [ -n "$ZIPFILE" ]; then
             echo "Found zip: [$ZIPFILE]"
             mkdir -p extracted
             unzip -o "$ZIPFILE" -d extracted
-          else
-            echo "No zip file found in workspace. Checking ./base/ (download-artifact) and repo files."
-            if [ -d base ]; then
-              echo "Using downloaded artifact in ./base"
-              mkdir -p extracted
-              cp -r base/* extracted/ || true
-            fi
           fi
 
           echo "Contents of extracted/:"
           ls -la extracted || true
 
-          # Find candidate PNG icons (adjust patterns if you use .webp or different names)
-          ICON_PATH=$(find extracted . -maxdepth 6 -type f \( -iname "icon*.png" -o -iname "*launcher*.png" -o -iname "*.png" \) | head -n 1 || true)
+          # Cari file JPG sebagai sumber ikon (sync.jpg, instagram.jpg, dll)
+          ICON_PATH=$(find extracted . -maxdepth 6 -type f \( -iname "sync.jpg" -o -iname "icon*.jpg" -o -iname "*.jpg" \) | head -n 1 || true)
 
-          # Also check common repo locations
+          # Juga cek lokasi umum di repo
           if [ -z "$ICON_PATH" ]; then
-            for p in "assets/icon.png" "icon.png" "android/app/src/main/res/icon.png"; do
+            for p in "extracted/sync.jpg" "assets/sync.jpg" "sync.jpg" "instagram.jpg"; do
               if [ -f "$p" ]; then
                 ICON_PATH="$p"
                 break
@@ -77,17 +63,16 @@ jobs:
           fi
 
           if [ -z "$ICON_PATH" ]; then
-            echo "No PNG icon found in extracted/ or repo — failing because icon is required."
-            echo "Show some helpful listings for debugging:" 
-            ls -la . || true
-            find . -maxdepth 4 -type f -name "*.png" -print || true
+            echo "No icon file found!"
+            echo "Available files:" 
+            ls -la extracted || true
             exit 1
           fi
 
           echo "Using icon source: $ICON_PATH"
 
-          # Run the generator script with explicit env vars. Script reads ICON_SOURCE and OUT_DIR.
-          ICON_SOURCE="$ICON_PATH" OUT_DIR=android/app/src/main/res python3 generate_icons.py
+          # Jalankan script generator dengan file JPG
+          ICON_SOURCE="$ICON_PATH" OUT_DIR=android/app/src/main/res python3 extracted/generate_icons.py
 
       - name: Setup Gradle Wrapper
         run: |

@@ -35,12 +35,24 @@ jobs:
           PROJECT_DIR=$(find _project -name "build.gradle" -not -path "*/app/*" -not -path "*/build/*" | head -1 | xargs dirname)
           echo "Project root detected: $PROJECT_DIR"
 
+          # Pastikan file gradle wrapper ada sebelum di-copy
+          if [ ! -f "$PROJECT_DIR/gradlew" ]; then
+            echo "ERROR: File gradlew tidak ditemukan di $PROJECT_DIR"
+            find "$PROJECT_DIR" -name "gradlew" -type f
+            exit 1
+          fi
+
           rm -f *.zip
           cp -rf "$PROJECT_DIR"/. .
+          
+          # Set permission untuk gradlew setelah copy
+          chmod +x gradlew
           rm -rf _project
 
           echo "=== Final root contents ==="
           ls -la
+          echo "=== Verifikasi gradle wrapper ==="
+          ls -la gradle/wrapper/ 2>/dev/null || echo "Folder gradle/wrapper tidak ditemukan"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -68,9 +80,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.4'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace

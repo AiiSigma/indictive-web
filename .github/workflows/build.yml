@@ -16,6 +16,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ═══════════════════════════════════════════
+      #  EXTRACT ZIP — ini step yang tadi kurang
+      # ═══════════════════════════════════════════
+      - name: Extract Project Files from ZIP
+        run: |
+          set -eux
+
+          # Cari file zip di repo
+          ZIPFILE=$(find . -maxdepth 3 -type f -iname "*.zip" | head -n 1 || true)
+
+          if [ -z "$ZIPFILE" ]; then
+            echo "::warning::No zip file found, assuming files already extracted"
+            exit 0
+          fi
+
+          echo "Found zip: $ZIPFILE"
+          unzip -o "$ZIPFILE" -d ./
+
+          echo "Extracted files:"
+          ls -la ./*.py ./*.jpg android/app/build.gradle 2>/dev/null || true
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -36,33 +57,22 @@ jobs:
           pip install Pillow
           python3 generate_icons.py
 
-      # ── Gradle Setup (FIX: download gradle langsung, generate wrapper) ──
+      # ── Gradle Setup ──
       - name: Setup Gradle Wrapper
         run: |
           cd android
 
-          # Cek apakah gradle-wrapper.jar sudah ada
           if [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
             echo "gradle-wrapper.jar already exists, skipping download"
           else
-            echo "gradle-wrapper.jar not found, downloading Gradle 8.4 to generate it..."
-
-            # Download Gradle distribution dari source resmi
+            echo "gradle-wrapper.jar not found, downloading Gradle 8.4..."
             wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip -O /tmp/gradle.zip
-
-            # Extract ke folder sementara
             unzip -q /tmp/gradle.zip -d /tmp/
-
-            # Generate wrapper menggunakan gradle yang baru di-download
             /tmp/gradle-8.4/bin/gradle wrapper --gradle-version 8.4
-
             echo "Gradle wrapper generated successfully"
           fi
 
-          # Pastikan gradlew executable
           chmod +x gradlew
-
-          # Tulis local.properties dengan SDK path yang benar
           echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       # ── Build ──
@@ -95,7 +105,7 @@ jobs:
           fi
 
           cp "$APK" output/SyncXxX.apk
-          echo "✅ APK built successfully: $(du -h output/SyncXxX.apk | cut -f1)"
+          echo "APK built successfully: $(du -h output/SyncXxX.apk | cut -f1)"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
